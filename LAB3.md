@@ -8,15 +8,15 @@
 
 | 项 | 内容 |
 |---|---|
-| 小组 | 第 <组号> 组 |
-| 仓库地址 | <https://github.com/…> |
-| 主机 | <云厂商与规格名，例如某云的 2 vCPU 4 GB 通用型> |
-| CPU | <`lscpu` 的 Model name；vCPU 数> |
-| 内存与 swap | <`free -m` 的 total；`swapon --show` 的输出，没有 swap 就写“无”> |
-| 操作系统、内核、systemd | <`/etc/os-release` 的 PRETTY_NAME；`uname -r`；`systemctl --version` 第一行> |
-| cgroup | <`stat -fc %T /sys/fs/cgroup` 的输出；`cat /sys/fs/cgroup/cgroup.controllers` 的输出> |
-| Go、Prometheus、node_exporter | <`go version`；`tools/prometheus --version` 第一行；`tools/node_exporter --version` 第一行> |
-| 分核 | 实例：<如 1>；loadgen、lbd、scaler、Prometheus、node_exporter：<如 0> |
+| 小组 | 第 8 组（`runs/task0-environment/summary.md`） |
+| 仓库地址 | <https://github.com/aCannedFish/ops-lab3-8> |
+| 主机 | 华为云 ECS `x1e.2u.4g`（`runs/task0-environment/summary.md`） |
+| CPU | `General Purpose Processor`；2 vCPU（`runs/task0-environment/summary.md`） |
+| 内存与 swap | `free -m` total：3531 MiB；无 swap（`runs/task0-environment/summary.md`） |
+| 操作系统、内核、systemd | Ubuntu 24.04.5 LTS；`6.8.0-146-generic`；systemd 255（255.4-1ubuntu8.17）（`runs/task0-environment/summary.md`） |
+| cgroup | `cgroup2fs`；`cpuset cpu io memory hugetlb pids rdma misc`（`runs/task0-environment/summary.md`） |
+| Go、Prometheus、node_exporter | Go 1.26.9；Prometheus 3.13.4；node_exporter 1.12.1（`runs/task0-environment/summary.md`） |
+| 分核 | 后续实例：CPU 1；loadgen、lbd、scaler、Prometheus、node_exporter：CPU 0（`runs/task0-environment/summary.md`） |
 
 ## 2. 任务 A：配额，节流与 OOM
 
