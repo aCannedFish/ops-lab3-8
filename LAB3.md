@@ -53,6 +53,8 @@ throttle_ratio      <填写>
 
 ### 2.3 A3 OOM
 
+O1 已完成所需的默认 GC 基线：`runs/a3-default-10`、`runs/a3-default-20`、`runs/a3-default-30`，预测、汇总和 OOM 证据见 `runs/o1-preparation/summary.md`。以下完整 A3 报告及两种改法留给组员补充；本节未标为全部完成。
+
 预测（测量之前写）：`/api/report?mb=8&ms=500` 在到达率 10、20、30 时平均和最多各有几个在途请求？RSS 大约多少？在 `MemoryMax=200M` 下会在哪一个阶段被杀？<填写>
 
 <粘贴三次实验的表格（`scripts/table.sh runs/<名字> ok_rps error_rate p99_ms inflight_avg report_inflight_max rss_max_mb heap_max_mb mem_current_max_mb mem_limit_mb`）>
@@ -169,7 +171,7 @@ C3 中健康检查为什么全部通过？用 `runs/<名字>/lbd-metrics-end.txt
 
 | 选做 | 完成情况与证据 |
 |---|---|
-| O1 GOMEMLIMIT | <未做 / 预测、`runs/` 目录、结论> |
+| O1 GOMEMLIMIT | 已完成本轮对照与分析：测量前预测 `runs/o1-preparation/prediction.md`；证据及交接 `runs/o1-preparation/summary.md`；总表 `runs/o1-preparation/comparison.csv`。默认 GC 的 10/20/30 请求/秒基线在 `runs/a3-default-*`，GOMEMLIMIT=160MiB 的对应组及 60 请求/秒边界在 `runs/o1-limit160-*`。200MiB cgroup 下，20 请求/秒由默认组 OOM 改善为 795/795 成功，30 与 60 请求/秒仍 OOM，验证软上限无法约束过大的活跃集。使用已验证限额生效的用户级 systemd；内核日志权限限制见汇总。 |
 | O2 两层伸缩 | <未做 / 参数、`runs/` 目录、结论> |
 | O3 扩错层 | <未做 / 预测、`runs/` 目录、结论> |
 | O4 Kubernetes 的 HPA | <未做 / 环境、配置文件、数据与结论> |

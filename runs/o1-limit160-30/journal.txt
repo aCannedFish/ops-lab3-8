@@ -1,0 +1,8 @@
+Nov 13 22:17:11 ecs-249f taskset[586758]: 2026/11/13 22:17:11 已停止
+Nov 13 22:17:11 ecs-249f systemd[3438346]: Stopped lab3-a.service - /usr/bin/taskset -c 1 /home/ubuntu/lab3/bin/enrolld -addr 127.0.0.1:8081 -data /home/ubuntu/lab3/data/o1-limit160-20 -report-max 0.
+Nov 13 22:17:11 ecs-249f systemd[3438346]: lab3-a.service: Consumed 1.186s CPU time, 181.0M memory peak, 0B memory swap peak.
+Nov 13 22:17:11 ecs-249f systemd[3438346]: Started lab3-a.service - /usr/bin/taskset -c 1 /home/ubuntu/lab3/bin/enrolld -addr 127.0.0.1:8081 -data /home/ubuntu/lab3/data/o1-limit160-30 -report-max 0.
+Nov 13 22:17:11 ecs-249f taskset[587562]: 2026/11/13 22:17:11 enrolld v1 监听 127.0.0.1:8081；GOMAXPROCS=1；cgroup /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/lab3-a.service；预热 0s；读：work=200000、pool=32、db-ms=2；写：sync=each
+Nov 13 22:17:30 ecs-249f systemd[3438346]: lab3-a.service: A process of this unit has been killed by the OOM killer.
+Nov 13 22:17:30 ecs-249f systemd[3438346]: lab3-a.service: Main process exited, code=killed, status=9/KILL
+Nov 13 22:17:30 ecs-249f systemd[3438346]: lab3-a.service: Failed with result 'oom-kill'.

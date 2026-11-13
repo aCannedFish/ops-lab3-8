@@ -1,0 +1,2 @@
+Nov 13 22:12:47 ecs-249f systemd[3438346]: Started lab3-a.service - /usr/bin/taskset -c 1 /home/ubuntu/lab3/bin/enrolld -addr 127.0.0.1:8081 -data /home/ubuntu/lab3/data/a3-default-10 -report-max 0.
+Nov 13 22:12:47 ecs-249f taskset[585023]: 2026/11/13 22:12:47 enrolld v1 监听 127.0.0.1:8081；GOMAXPROCS=1；cgroup /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/lab3-a.service；预热 0s；读：work=200000、pool=32、db-ms=2；写：sync=each

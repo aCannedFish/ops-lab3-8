@@ -1,0 +1,6 @@
+ExecStart={ path=/usr/bin/taskset ; argv[]=/usr/bin/taskset -c 1 /home/ubuntu/lab3/bin/enrolld -addr 127.0.0.1:8081 -data /home/ubuntu/lab3/data/o1-limit160-30 -report-max 0 ; ignore_errors=no ; start_time=[Fri 2026-11-13 22:17:11 CST] ; stop_time=[n/a] ; pid=587562 ; code=(null) ; status=0/0 }
+ControlGroup=/user.slice/user-1000.slice/user@1000.service/app.slice/lab3-a.service
+CPUQuotaPerSecUSec=1s
+MemoryMax=209715200
+MemorySwapMax=0
+Environment=GOGC=100 GOMEMLIMIT=160MiB

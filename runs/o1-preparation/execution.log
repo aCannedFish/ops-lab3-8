@@ -1,0 +1,218 @@
+Running as unit: lab3-a.service; invocation ID: c573e44bfe4e4f139253a8eabed96384
+== loadgen（结果写进 runs/a3-default-10/）
+loadgen：GET http://127.0.0.1:8081/api/report?mb=8&ms=500，2 个阶段共 50s，到达过程 poisson，超时 2s，GOMAXPROCS=1
+阶段 1/2：目标 0 请求/秒，已发出 0，已成功 0，在途 0，压测机 CPU 0%
+阶段 2/2：目标 10 请求/秒，已发出 373，已成功 367，在途 6，压测机 CPU 0%
+等待在途的 6 个请求结束（最多 2s）…
+step  target_rps  sent   ok  error_rate  mean_ms  p50_ms  p99_ms  max_ms  slo_good  lag_p99_ms  gen_cpu_pct  
+   1           0     0    0                                                                               0  
+   2          10   373  373      0.0000   502.89  502.16  507.16  510.04    1.0000        1.06            0  
+ all               373  373      0.0000   502.89  502.16  507.16  510.04    1.0000        1.06            0  
+== 按阶段查询 Prometheus
+提醒：窗口只有 5s。抓取间隔为 5 s 时，窗口太短 rate() 可能拿不到两个样本；阶段至少 30 s
+提醒：窗口只有 5s。抓取间隔为 5 s 时，窗口太短 rate() 可能拿不到两个样本；阶段至少 30 s
+-- red.csv
+step  target_rps  server_rps  server_error_rate  server_p99_ms  server_mean_ms  inflight_avg  cpu_ms_per_req  sched_wait_p99_ms  gomaxprocs  cg_limit_cores  cg_cpu_cores  throttle_ratio  throttled_s_per_s  mem_limit_mb  mem_current_max_mb  rss_max_mb  heap_max_mb  report_inflight_max  gc_per_s
+1     0           -           -                  -              -               0             -               0.9925             1           1               0.000761      0               0                  200           3.25                8.66797     1.64709      0                    0
+2     10          9.17647     0                  995            501.997         4.68571       2.00277         8.82647            1           1               0.0183783     0               0                  200           180.695             185.73      137.361      9                    1.70588
+-- use.csv
+step  target_rps  svc_cpu_busy  all_cpu_busy  cpu_steal  cpu_iowait  procs_running_avg  cpu_psi_some  mem_available_min_mb  swap_in_per_s  disk_w_per_s  disk_wkb_per_s  disk_w_await_ms  disk_f_per_s  disk_f_await_ms  disk_aqu_sz  disk_util
+1     0           -             -             -          -           2                  -             2368.8                -              -             -               -                -             -                -            -
+2     10          0.0286667     0.024         0          0.004       1.28571            0.012612      2207.68               0              11            59.4667         0.7              0.4           0.166667         0.0161333    0.00786667
+完成：runs/a3-default-10
+=== Completed a3-default-10 ===
+Result=success
+NRestarts=0
+ExecMainCode=0
+ExecMainStatus=0
+MemoryPeak=189730816
+MemorySwapPeak=0
+ActiveState=active
+Running as unit: lab3-a.service; invocation ID: db1b132c2c1d40b4b10c53d020fb8994
+== loadgen（结果写进 runs/a3-default-20/）
+loadgen：GET http://127.0.0.1:8081/api/report?mb=8&ms=500，2 个阶段共 50s，到达过程 poisson，超时 2s，GOMAXPROCS=1
+阶段 1/2：目标 0 请求/秒，已发出 0，已成功 0，在途 0，压测机 CPU 0%
+阶段 2/2：目标 20 请求/秒，已发出 795，已成功 10，在途 0，压测机 CPU 0%
+等待在途的 0 个请求结束（最多 2s）…
+step  target_rps  sent  ok  error_rate  mean_ms  p50_ms  p99_ms  max_ms  slo_good  lag_p99_ms  gen_cpu_pct  
+   1           0     0   0                                                                               0  
+   2          20   795  10      0.9874   507.34  506.29  511.26  511.26    0.0126        1.06            0  
+ all               795  10      0.9874   507.34  506.29  511.26  511.26    0.0126        1.06            0  
+curl: (7) Failed to connect to 127.0.0.1 port 8081 after 0 ms: Couldn't connect to server
+警告：结束时取不到 /metrics
+== 按阶段查询 Prometheus
+提醒：窗口只有 5s。抓取间隔为 5 s 时，窗口太短 rate() 可能拿不到两个样本；阶段至少 30 s
+提醒：窗口只有 5s。抓取间隔为 5 s 时，窗口太短 rate() 可能拿不到两个样本；阶段至少 30 s
+-- red.csv
+step  target_rps  server_rps  server_error_rate  server_p99_ms  server_mean_ms  inflight_avg  cpu_ms_per_req  sched_wait_p99_ms  gomaxprocs  cg_limit_cores  cg_cpu_cores  throttle_ratio  throttled_s_per_s  mem_limit_mb  mem_current_max_mb  rss_max_mb  heap_max_mb  report_inflight_max  gc_per_s
+1     0           -           -                  -              -               0             -               0.0099             1           1               0.0008045     0               0                  200           3.25391             8.54688     1.64709      0                    0
+2     20          -           -                  -              -               -             -               -                  -           -               -             -               -                  -             -                   -           -            -                    -
+-- use.csv
+step  target_rps  svc_cpu_busy  all_cpu_busy  cpu_steal  cpu_iowait  procs_running_avg  cpu_psi_some  mem_available_min_mb  swap_in_per_s  disk_w_per_s  disk_wkb_per_s  disk_w_await_ms  disk_f_per_s  disk_f_await_ms  disk_aqu_sz  disk_util
+1     0           -             -             -          -           2                  -             2342.6                -              -             -               -                -             -                -            -
+2     20          0.0116667     0.014         0          0.0005      1.28571            0.0064497     2267.66               0              18.2          101.733         0.895604         0.4           0                0.0163333    0.0014
+完成：runs/a3-default-20
+=== Completed a3-default-20 ===
+Result=oom-kill
+NRestarts=0
+ExecMainCode=2
+ExecMainStatus=9
+MemoryPeak=2805760
+MemorySwapPeak=0
+ActiveState=failed
+Running as unit: lab3-a.service; invocation ID: 5df2bc4caa3f41688bf50fc0371da71f
+== loadgen（结果写进 runs/a3-default-30/）
+loadgen：GET http://127.0.0.1:8081/api/report?mb=8&ms=500，2 个阶段共 50s，到达过程 poisson，超时 2s，GOMAXPROCS=1
+阶段 1/2：目标 0 请求/秒，已发出 0，已成功 0，在途 0，压测机 CPU 0%
+阶段 2/2：目标 30 请求/秒，已发出 1202，已成功 5，在途 1，压测机 CPU 0%
+等待在途的 1 个请求结束（最多 2s）…
+step  target_rps  sent  ok  error_rate  mean_ms  p50_ms  p99_ms  max_ms  slo_good  lag_p99_ms  gen_cpu_pct  
+   1           0     0   0                                                                               0  
+   2          30  1202   5      0.9958   506.69  506.70  507.03  507.03    0.0042        1.06            0  
+ all              1202   5      0.9958   506.69  506.70  507.03  507.03    0.0042        1.06            0  
+curl: (7) Failed to connect to 127.0.0.1 port 8081 after 0 ms: Couldn't connect to server
+警告：结束时取不到 /metrics
+== 按阶段查询 Prometheus
+提醒：窗口只有 5s。抓取间隔为 5 s 时，窗口太短 rate() 可能拿不到两个样本；阶段至少 30 s
+提醒：窗口只有 5s。抓取间隔为 5 s 时，窗口太短 rate() 可能拿不到两个样本；阶段至少 30 s
+-- red.csv
+step  target_rps  server_rps  server_error_rate  server_p99_ms  server_mean_ms  inflight_avg  cpu_ms_per_req  sched_wait_p99_ms  gomaxprocs  cg_limit_cores  cg_cpu_cores  throttle_ratio  throttled_s_per_s  mem_limit_mb  mem_current_max_mb  rss_max_mb  heap_max_mb  report_inflight_max  gc_per_s
+1     0           -           -                  -              -               0             -               0.0099             1           1               0.00075525    0               0                  200           3.21094             8.53125     1.61655      0                    0
+2     30          -           -                  -              -               -             -               -                  -           -               -             -               -                  -             -                   -           -            -                    -
+-- use.csv
+step  target_rps  svc_cpu_busy  all_cpu_busy  cpu_steal  cpu_iowait   procs_running_avg  cpu_psi_some  mem_available_min_mb  swap_in_per_s  disk_w_per_s  disk_wkb_per_s  disk_w_await_ms  disk_f_per_s  disk_f_await_ms  disk_aqu_sz  disk_util
+1     0           -             -             -          -            1                  -             2351.07               -              -             -               -                -             -                -            -
+2     30          0.0133333     0.0153333     0          0.000333333  1.71429            0.00393357    2284.75               0              17.0667       88.9333         1.01172          0.666667      0.1              0.0173       0.0008
+完成：runs/a3-default-30
+=== Completed a3-default-30 ===
+Result=oom-kill
+NRestarts=0
+ExecMainCode=2
+ExecMainStatus=9
+MemoryPeak=2768896
+MemorySwapPeak=0
+ActiveState=failed
+Running as unit: lab3-a.service; invocation ID: 2dfebdd3dff849bb9657e1ee575254c2
+== loadgen（结果写进 runs/o1-limit160-10/）
+loadgen：GET http://127.0.0.1:8081/api/report?mb=8&ms=500，2 个阶段共 50s，到达过程 poisson，超时 2s，GOMAXPROCS=1
+阶段 1/2：目标 0 请求/秒，已发出 0，已成功 0，在途 0，压测机 CPU 0%
+阶段 2/2：目标 10 请求/秒，已发出 373，已成功 367，在途 6，压测机 CPU 0%
+等待在途的 6 个请求结束（最多 2s）…
+step  target_rps  sent   ok  error_rate  mean_ms  p50_ms  p99_ms  max_ms  slo_good  lag_p99_ms  gen_cpu_pct  
+   1           0     0    0                                                                               0  
+   2          10   373  373      0.0000   502.94  502.18  507.23  510.28    1.0000        1.06            0  
+ all               373  373      0.0000   502.94  502.18  507.23  510.28    1.0000        1.06            0  
+== 按阶段查询 Prometheus
+提醒：窗口只有 5s。抓取间隔为 5 s 时，窗口太短 rate() 可能拿不到两个样本；阶段至少 30 s
+提醒：窗口只有 5s。抓取间隔为 5 s 时，窗口太短 rate() 可能拿不到两个样本；阶段至少 30 s
+-- red.csv
+step  target_rps  server_rps  server_error_rate  server_p99_ms  server_mean_ms  inflight_avg  cpu_ms_per_req  sched_wait_p99_ms  gomaxprocs  cg_limit_cores  cg_cpu_cores  throttle_ratio  throttled_s_per_s  mem_limit_mb  mem_current_max_mb  rss_max_mb  heap_max_mb  report_inflight_max  gc_per_s
+1     0           -           -                  -              -               0             -               0.0099             1           1               0.000763      0               0                  200           3.19141             8.60547     1.57181      0                    0
+2     10          9.26471     0                  995            502.046         4.4           2.00609         6.95714            1           1               0.0185788     0               0                  200           156.75              161.801     121.36       8                    1.73529
+-- use.csv
+step  target_rps  svc_cpu_busy  all_cpu_busy  cpu_steal  cpu_iowait  procs_running_avg  cpu_psi_some  mem_available_min_mb  swap_in_per_s  disk_w_per_s  disk_wkb_per_s  disk_w_await_ms  disk_f_per_s  disk_f_await_ms  disk_aqu_sz  disk_util
+1     0           -             -             -          -           1                  -             2354.67               -              -             -               -                -             -                -            -
+2     10          0.032         0.0255        0          0.0005      1.71429            0.011394      2176.73               0              7.16667       44.1333         0.609302         0.4           0.0833333        0.0044       0.000833333
+完成：runs/o1-limit160-10
+=== Completed o1-limit160-10 ===
+Result=success
+NRestarts=0
+ExecMainCode=0
+ExecMainStatus=0
+MemoryPeak=164577280
+MemorySwapPeak=0
+ActiveState=active
+Running as unit: lab3-a.service; invocation ID: 0dd84b3bcf71405d92021899563bb762
+== loadgen（结果写进 runs/o1-limit160-20/）
+loadgen：GET http://127.0.0.1:8081/api/report?mb=8&ms=500，2 个阶段共 50s，到达过程 poisson，超时 2s，GOMAXPROCS=1
+阶段 1/2：目标 0 请求/秒，已发出 0，已成功 0，在途 0，压测机 CPU 0%
+阶段 2/2：目标 20 请求/秒，已发出 795，已成功 780，在途 15，压测机 CPU 0%
+等待在途的 15 个请求结束（最多 2s）…
+step  target_rps  sent   ok  error_rate  mean_ms  p50_ms  p99_ms  max_ms  slo_good  lag_p99_ms  gen_cpu_pct  
+   1           0     0    0                                                                               0  
+   2          20   795  795      0.0000   502.39  502.01  507.13  507.73    1.0000        1.05            0  
+ all               795  795      0.0000   502.39  502.01  507.13  507.73    1.0000        1.05            0  
+== 按阶段查询 Prometheus
+提醒：窗口只有 5s。抓取间隔为 5 s 时，窗口太短 rate() 可能拿不到两个样本；阶段至少 30 s
+提醒：窗口只有 5s。抓取间隔为 5 s 时，窗口太短 rate() 可能拿不到两个样本；阶段至少 30 s
+-- red.csv
+step  target_rps  server_rps  server_error_rate  server_p99_ms  server_mean_ms  inflight_avg  cpu_ms_per_req  sched_wait_p99_ms  gomaxprocs  cg_limit_cores  cg_cpu_cores  throttle_ratio  throttled_s_per_s  mem_limit_mb  mem_current_max_mb  rss_max_mb  heap_max_mb  report_inflight_max  gc_per_s
+1     0           -           -                  -              -               0             -               0.9925             1           1               0.00082875    0               0                  200           3.25                8.54297     1.64709      0                    0
+2     20          19.6765     0                  995            501.538         10.2286       1.37803         5.72727            1           1               0.0271148     0               0                  200           180.945             185.93      177.486      22                   4.76471
+-- use.csv
+step  target_rps  svc_cpu_busy  all_cpu_busy  cpu_steal  cpu_iowait  procs_running_avg  cpu_psi_some  mem_available_min_mb  swap_in_per_s  disk_w_per_s  disk_wkb_per_s  disk_w_await_ms  disk_f_per_s  disk_f_await_ms  disk_aqu_sz  disk_util
+1     0           -             -             -          -           3                  -             2346.71               -              -             -               -                -             -                -            -
+2     20          0.0513333     0.0396667     0          0.002       1.57143            0.0201767     2170.79               0              16.0333       90.8            2.01247          0.4           0                0.0324667    0.00503333
+完成：runs/o1-limit160-20
+=== Completed o1-limit160-20 ===
+Result=success
+NRestarts=0
+ExecMainCode=0
+ExecMainStatus=0
+MemoryPeak=189853696
+MemorySwapPeak=0
+ActiveState=active
+Running as unit: lab3-a.service; invocation ID: 9b8c0695c3d94ca6a0db05dad17022d5
+== loadgen（结果写进 runs/o1-limit160-30/）
+loadgen：GET http://127.0.0.1:8081/api/report?mb=8&ms=500，2 个阶段共 50s，到达过程 poisson，超时 2s，GOMAXPROCS=1
+阶段 1/2：目标 0 请求/秒，已发出 0，已成功 0，在途 0，压测机 CPU 0%
+阶段 2/2：目标 30 请求/秒，已发出 1202，已成功 215，在途 1，压测机 CPU 1%
+等待在途的 1 个请求结束（最多 2s）…
+step  target_rps  sent   ok  error_rate  mean_ms  p50_ms  p99_ms  max_ms  slo_good  lag_p99_ms  gen_cpu_pct  
+   1           0     0    0                                                                               0  
+   2          30  1202  215      0.8211   503.03  502.03  510.23  511.02    0.1789        1.05            1  
+ all              1202  215      0.8211   503.03  502.03  510.23  511.02    0.1789        1.05            1  
+curl: (7) Failed to connect to 127.0.0.1 port 8081 after 0 ms: Couldn't connect to server
+警告：结束时取不到 /metrics
+== 按阶段查询 Prometheus
+提醒：窗口只有 5s。抓取间隔为 5 s 时，窗口太短 rate() 可能拿不到两个样本；阶段至少 30 s
+提醒：窗口只有 5s。抓取间隔为 5 s 时，窗口太短 rate() 可能拿不到两个样本；阶段至少 30 s
+-- red.csv
+step  target_rps  server_rps  server_error_rate  server_p99_ms  server_mean_ms  inflight_avg  cpu_ms_per_req  sched_wait_p99_ms  gomaxprocs  cg_limit_cores  cg_cpu_cores  throttle_ratio  throttled_s_per_s  mem_limit_mb  mem_current_max_mb  rss_max_mb  heap_max_mb  report_inflight_max  gc_per_s
+1     0           -           -                  -              -               0             -               0.0099             1           1               0.000765      0               0                  200           3.17578             8.625       1.60907      0                    0
+2     30          2.93321     0                  995            501.361         12.5          1.14782         1                  1           1               0.00336712    0               0                  200           150.031             155.125     137.48       15                   0.683076
+-- use.csv
+step  target_rps  svc_cpu_busy  all_cpu_busy  cpu_steal  cpu_iowait   procs_running_avg  cpu_psi_some  mem_available_min_mb  swap_in_per_s  disk_w_per_s  disk_wkb_per_s  disk_w_await_ms  disk_f_per_s  disk_f_await_ms  disk_aqu_sz  disk_util
+1     0           -             -             -          -            2                  -             2338.15               -              -             -               -                -             -                -            -
+2     30          0.0136667     0.016         0          0.000833333  1.71429            0.0064828     2148.79               0              15.2          84.2667         0.622807         0.4           0.0833333        0.00946667   0.0016
+完成：runs/o1-limit160-30
+=== Completed o1-limit160-30 ===
+Result=oom-kill
+NRestarts=0
+ExecMainCode=2
+ExecMainStatus=9
+MemoryPeak=2543616
+MemorySwapPeak=0
+ActiveState=failed
+Running as unit: lab3-a.service; invocation ID: 3a3885221ba04220b1aea7968c187a62
+== loadgen（结果写进 runs/o1-limit160-overload/）
+loadgen：GET http://127.0.0.1:8081/api/report?mb=8&ms=500，2 个阶段共 50s，到达过程 poisson，超时 2s，GOMAXPROCS=1
+阶段 1/2：目标 0 请求/秒，已发出 0，已成功 0，在途 0，压测机 CPU 0%
+阶段 2/2：目标 60 请求/秒，已发出 2461，已成功 0，在途 0，压测机 CPU 1%
+等待在途的 0 个请求结束（最多 2s）…
+step  target_rps  sent  ok  error_rate  mean_ms  p50_ms  p99_ms  max_ms  slo_good  lag_p99_ms  gen_cpu_pct  
+   1           0     0   0                                                                               0  
+   2          60  2461   0      1.0000                                     0.0000        1.06            1  
+ all              2461   0      1.0000                                     0.0000        1.06            1  
+curl: (7) Failed to connect to 127.0.0.1 port 8081 after 0 ms: Couldn't connect to server
+警告：结束时取不到 /metrics
+== 按阶段查询 Prometheus
+提醒：窗口只有 5s。抓取间隔为 5 s 时，窗口太短 rate() 可能拿不到两个样本；阶段至少 30 s
+提醒：窗口只有 5s。抓取间隔为 5 s 时，窗口太短 rate() 可能拿不到两个样本；阶段至少 30 s
+-- red.csv
+step  target_rps  server_rps  server_error_rate  server_p99_ms  server_mean_ms  inflight_avg  cpu_ms_per_req  sched_wait_p99_ms  gomaxprocs  cg_limit_cores  cg_cpu_cores  throttle_ratio  throttled_s_per_s  mem_limit_mb  mem_current_max_mb  rss_max_mb  heap_max_mb  report_inflight_max  gc_per_s
+1     0           -           -                  -              -               0             -               0.0099             1           1               0.0007235     0               0                  200           3.17578             8.49609     1.61688      0                    0
+2     60          -           -                  -              -               -             -               -                  -           -               -             -               -                  -             -                   -           -            -                    -
+-- use.csv
+step  target_rps  svc_cpu_busy  all_cpu_busy  cpu_steal  cpu_iowait   procs_running_avg  cpu_psi_some  mem_available_min_mb  swap_in_per_s  disk_w_per_s  disk_wkb_per_s  disk_w_await_ms  disk_f_per_s  disk_f_await_ms  disk_aqu_sz  disk_util
+1     0           -             -             -          -            2                  -             2350.07               -              -             -               -                -             -                -            -
+2     60          0.0243333     0.0246667     0          0.000333333  1.71429            0.00834353    2256.05               0              7.66667       42.6667         0.652174         0.4           0                0.005        0.0007
+完成：runs/o1-limit160-overload
+=== Completed o1-limit160-overload ===
+Result=oom-kill
+NRestarts=0
+ExecMainCode=2
+ExecMainStatus=9
+MemoryPeak=2949120
+MemorySwapPeak=0
+ActiveState=failed
