@@ -22,50 +22,133 @@
 
 ### 2.1 A1 配额算术
 
-预测（测量之前写）：配额 0.5 核、周期 100 ms 时，1 个和 2 个线程跑满，每个线程每个周期运行多久、被停多久？本机上 enrolld 的 GOMAXPROCS 会是几，为什么？<填写>
+预测（测量之前写）：配额 0.5 核、周期 100 ms 时，1 个和 2 个线程跑满，每个线程每个周期运行多久、被停多久？本机上 enrolld 的 GOMAXPROCS 会是几，为什么？配额预算为每 100 ms 共 50 ms CPU 时间。1 个忙线程预计运行 50 ms、被停 50 ms；2 个线程分别在两个核上同时忙时，每个预计运行 25 ms、被停 75 ms。本机有 2 个 vCPU，未设置 GOMAXPROCS，预计 Go 1.26.9 的 GOMAXPROCS 为 2。 预测原文见 `runs/a-preparation/predictions.md`。
 
-两次 `-burn` 的输出：
+两次 `-burn` 的输出（`runs/a1-burn/burn-1.txt`、`burn-2.txt`）：
 
 ```text
-<粘贴>
+cgroup：/sys/fs/cgroup/system.slice/run-r260b04c6c7ad4b16a9a05c4f106e07c1.scope
+cpu.max：配额 0.50 核，周期 100ms（每个周期最多 50 ms CPU 时间）
+GOMAXPROCS=2，忙线程 1 个，计数 10.0 秒
+实际用核 0.50；周期 100 个，被节流 100 个（100%）；被停共 5.05 秒（按 CPU 累计）
+每个线程每个周期被停：实测 50.5 ms，算术 50.0 ms
+cgroup：/sys/fs/cgroup/system.slice/run-rbcbdf7b9955c42508481df1fec762389.scope
+cpu.max：配额 0.50 核，周期 100ms（每个周期最多 50 ms CPU 时间）
+GOMAXPROCS=2，忙线程 2 个，计数 10.0 秒
+实际用核 0.50；周期 100 个，被节流 100 个（100%）；被停共 14.89 秒（按 CPU 累计）
+每个线程每个周期被停：实测 74.4 ms，算术 75.0 ms
 ```
 
 | 线程数 | 周期数 | 被节流的周期 | 实际用核 | 每线程每周期被停（实测） | 算术 |
 |---|---|---|---|---|---|
-| 1 | <填写> | <填写> | <填写> | <填写> | <填写> |
-| 2 | <填写> | <填写> | <填写> | <填写> | <填写> |
+| 1 | 100 | 100 | 0.50 核 | 50.5 ms | 运行 50 ms、被停 50 ms |
+| 2 | 100 | 100 | 0.50 核 | 74.4 ms | 每线程运行 25 ms、被停 75 ms |
+
+两次 GOMAXPROCS 均为 2。本机有两个可用逻辑核，Go 1.26.9 在这个条件下默认至少使用 2 个 P，因此 0.5 核配额下仍能同时运行两个 Go 线程。CPU 配额约束的是每个周期累计消耗的 CPU 时间。
 
 ### 2.2 A2 节流与 p99
 
 本组写的节流比例查询（与 `deploy/queries-red.txt` 一致）：
 
 ```text
-throttle_ratio      <填写>
+throttle_ratio      rate(cgroup_cpu_throttled_periods_total{job="enrolld"}[${window}]) / rate(cgroup_cpu_periods_total{job="enrolld"}[${window}])
 ```
 
-配额 100% 时测得的每请求 CPU：<填写> ms（`runs/<名字>/red.csv` 的 `cpu_ms_per_req`）；据此选定的到达率：<填写> 请求/秒，平均约 <填写> 核。
+配额 100% 时测得的每请求 CPU：4.26579 ms（`runs/a2-base/red.csv` 第 2 阶段的 `cpu_ms_per_req`）；据此选定到达率 94 请求/秒，预计平均约 0.400984 核。计算记录见 `runs/a-preparation/prediction-a2.md`。
 
-预测（配额改为 50% 之前写）：平均用量低于配额，p99 会不会变？节流比例大约多少？<填写>
+预测（配额改为 50% 之前写）：平均用量低于配额，p99 会不会变？节流比例大约多少？100% 配额基线的 60 请求/秒阶段测得每请求 CPU 为 4.26579 ms，据此 R=round(400/4.26579)=94 请求/秒，预计平均用量 94×4.26579/1000=0.400984 核。50% 配额下，Poisson 突发和两个线程并行可能提前耗尽周期预算，预计 p99 从约十毫秒增加到数十毫秒，节流周期比例约 30%（估计范围 20%～40%）。 原文见 `runs/a-preparation/prediction-a2.md`。
 
 各次实验的数据（`scripts/table.sh runs/<名字> ok_rps p50_ms p99_ms server_p99_ms gomaxprocs cg_limit_cores cg_cpu_cores throttle_ratio throttled_s_per_s`，每次一张表）：
 
-<粘贴表格：100%、50%、改法一、改法二>
+100% 配额对照，来源：`runs/a2-q100/table.md`。
+
+| step | target_rps | ok_rps | p50_ms | p99_ms | server_p99_ms | gomaxprocs | cg_limit_cores | cg_cpu_cores | throttle_ratio | throttled_s_per_s |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | 94 | 96.7 | 6.95 | 16.57 | 16.0143 | 2 | 1 | 0.417873 | 0 | 0 |
+| 2 | 94 | 91.2 | 6.94 | 11.28 | 9.98979 | 2 | 1 | 0.376712 | 0 | 0 |
+| all | - | 93.9 | 6.95 | 13.50 | - | - | - | - | - | - |
+
+50% 配额，来源：`runs/a2-q50/table.md`。
+
+| step | target_rps | ok_rps | p50_ms | p99_ms | server_p99_ms | gomaxprocs | cg_limit_cores | cg_cpu_cores | throttle_ratio | throttled_s_per_s |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | 94 | 96.7 | 6.98 | 41.75 | 40.3838 | 2 | 0.5 | 0.413295 | 0.335714 | 0.078296 |
+| 2 | 94 | 91.2 | 6.98 | 46.20 | 42.4333 | 2 | 0.5 | 0.376231 | 0.192857 | 0.0575274 |
+| all | - | 93.9 | 6.98 | 43.78 | - | - | - | - | - | - |
+
+改法一，60% 配额，来源：`runs/a2-q60/table.md`。
+
+| step | target_rps | ok_rps | p50_ms | p99_ms | server_p99_ms | gomaxprocs | cg_limit_cores | cg_cpu_cores | throttle_ratio | throttled_s_per_s |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | 94 | 96.7 | 6.91 | 18.38 | 16.7533 | 2 | 0.6 | 0.413301 | 0.0642857 | 0.0106204 |
+| 2 | 94 | 91.2 | 6.99 | 19.90 | 13.9842 | 2 | 0.6 | 0.372814 | 0.05 | 0.00401286 |
+| all | - | 93.9 | 6.94 | 19.36 | - | - | - | - | - | - |
+
+改法二，50% 配额、GOMAXPROCS=1，来源：`runs/a2-gmp1/table.md`。
+
+| step | target_rps | ok_rps | p50_ms | p99_ms | server_p99_ms | gomaxprocs | cg_limit_cores | cg_cpu_cores | throttle_ratio | throttled_s_per_s |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | 94 | 96.7 | 8.35 | 52.40 | 39.6826 | 1 | 0.5 | 0.408236 | 0.242857 | 0.042528 |
+| 2 | 94 | 91.2 | 8.45 | 46.16 | 23.9 | 1 | 0.5 | 0.372851 | 0.142857 | 0.0202004 |
+| all | - | 93.9 | 8.39 | 51.40 | - | - | - | - | - | - |
+
+两种改法的测前参数依据见 `runs/a-preparation/a2-fixes.md`。60% 配额取自较高阶段用量 0.417873 / 0.7，再向上取整。GOMAXPROCS=1 的总体 p99 为 51.40 ms，高于原 50% 配额的 43.78 ms，本次没有改善尾延迟；该设置减少计算并行度，一个忙线程仍可用满一个核并耗尽 0.5 核预算。所有组请求均成功，loadgen CPU 约 2%，发送滞后 p99 约 1 ms。A2 按指导书允许服务使用 CPU 0、1，与绑定 CPU 0 的压测器和监控共享核。
 
 ### 2.3 A3 OOM
 
-O1 已完成所需的默认 GC 基线：`runs/a3-default-10`、`runs/a3-default-20`、`runs/a3-default-30`，预测、汇总和 OOM 证据见 `runs/o1-preparation/summary.md`。以下完整 A3 报告及两种改法留给组员补充；本节未标为全部完成。
+本节使用 2026-11-17 新测的系统级 `lab3-a.service`。已有 O1 默认 GC 基线保留在 `runs/a3-default-10`、`a3-default-20`、`a3-default-30`。本轮每次新建服务，以 10、20、30 请求/秒连续加压，各 20 秒，固定 seed=1、Poisson 到达、MemorySwapMax=0，不设置 GOMEMLIMIT。服务使用 CPU 0、1，loadgen 绑定 CPU 0。
 
-预测（测量之前写）：`/api/report?mb=8&ms=500` 在到达率 10、20、30 时平均和最多各有几个在途请求？RSS 大约多少？在 `MemoryMax=200M` 下会在哪一个阶段被杀？<填写>
+预测（测量之前写）：`/api/report?mb=8&ms=500` 在到达率 10、20、30 时平均和最多各有几个在途请求？RSS 大约多少？在 `MemoryMax=200M` 下会在哪一个阶段被杀？本轮测前预测参考了 11 月 13 日已有的 O1 默认 GC 基线。按 λ×0.5 s，10、20、30 请求/秒的平均在途数为 5、10、15，活跃缓冲为 40、80、120 MiB；有限测量窗口中的峰值暂估 12、20、27，实际以采样为准。暂估基线 16 MiB，按 GOGC=100 的约两倍堆余量估算，平均内存规模约 96、176、256 MiB，突发时更高。预计 10 请求/秒存活，20 请求/秒首先发生 OOM，30 请求/秒也会超过 200 MiB。 预测原文见 `runs/a-preparation/predictions.md`。
 
-<粘贴三次实验的表格（`scripts/table.sh runs/<名字> ok_rps error_rate p99_ms inflight_avg report_inflight_max rss_max_mb heap_max_mb mem_current_max_mb mem_limit_mb`）>
+200 MiB、不限报表并发，来源：`runs/a3-oom/table.md`。
+
+| step | target_rps | ok_rps | error_rate | p99_ms | inflight_avg | report_inflight_max | rss_max_mb | heap_max_mb | mem_current_max_mb | mem_limit_mb |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | 10 | 9.1 | 0.0000 | 506.85 | 4.2 | 7 | 137.312 | 105.37 | 132.355 | 200 |
+| 2 | 20 | 1.9 | 0.9066 | 506.69 | - | - | - | - | - | - |
+| 3 | 30 | 0.0 | 1.0000 | - | - | - | - | - | - | - |
+| all | - | 3.6 | 0.8177 | 506.81 | - | - | - | - | - | - |
+
+改法一，320 MiB、不限报表并发，来源：`runs/a3-limit320/table.md`。
+
+| step | target_rps | ok_rps | error_rate | p99_ms | inflight_avg | report_inflight_max | rss_max_mb | heap_max_mb | mem_current_max_mb | mem_limit_mb |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | 10 | 9.1 | 0.0000 | 507.51 | 4.8 | 8 | 137.68 | 121.388 | 132.984 | 320 |
+| 2 | 20 | 19.8 | 0.0000 | 507.34 | 11.1333 | 18 | 314.191 | 185.497 | 309.57 | 320 |
+| 3 | 30 | 0.3 | 0.9888 | 502.33 | - | - | - | - | - | - |
+| all | - | 9.8 | 0.5129 | 507.34 | - | - | - | - | - | - |
+
+改法二，200 MiB、报表并发上限 11，来源：`runs/a3-cap11/table.md`。
+
+| step | target_rps | ok_rps | error_rate | p99_ms | inflight_avg | report_inflight_max | rss_max_mb | heap_max_mb | mem_current_max_mb | mem_limit_mb |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | 10 | 9.1 | 0.0000 | 506.91 | 4.13333 | 7 | 136.668 | 105.361 | 131.676 | 200 |
+| 2 | 20 | 16.4 | 0.1742 | 506.69 | 7.93333 | 11 | 185.996 | 169.411 | 181.113 | 200 |
+| 3 | 30 | 19.5 | 0.3740 | 506.14 | 9.6 | 11 | 186.156 | 153.429 | 181.242 | 200 |
+| all | - | 15.0 | 0.2515 | 506.69 | - | - | - | - | - | - |
 
 被杀的证据（`systemctl show -p ActiveState,Result,ExecMainStatus lab3-a` 和 `journalctl -u lab3-a` 的相关行，`dmesg` 或 `/var/log/kern.log` 中的 oom-kill 行）：
 
 ```text
-<粘贴>
+Result=oom-kill
+ExecMainStatus=9
+ActiveState=failed
+
+Nov 17 19:01:43 ecs-249f systemd[1]: lab3-a.service: A process of this unit has been killed by the OOM killer.
+Nov 17 19:01:43 ecs-249f systemd[1]: lab3-a.service: Main process exited, code=killed, status=9/KILL
+Nov 17 19:01:43 ecs-249f systemd[1]: lab3-a.service: Failed with result 'oom-kill'.
+
+Nov 17 19:01:43 ecs-249f kernel: oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=lab3-a.service,mems_allowed=0,oom_memcg=/system.slice/lab3-a.service,task_memcg=/system.slice/lab3-a.service,task=enrolld,pid=2398392,uid=1000
+Nov 17 19:01:43 ecs-249f kernel: Memory cgroup out of memory: Killed process 2398392 (enrolld) total-vm:1528500kB, anon-rss:203812kB, file-rss:5888kB, shmem-rss:0kB, UID:1000 pgtables:508kB oom_score_adj:0
 ```
 
-两种改法：按最坏情况定的 limit 是 <填写>（算式：<填写>）；限制并发时 `-report-max` 取 <填写>（依据：<填写>）。
+来源：`runs/a3-oom/unit-end.txt`、`journal.txt`、`kernel.txt`。20 请求/秒阶段发生 OOM，30 请求/秒阶段延续服务已停止的状态，全部请求失败。`-stop-below 0` 用于保留完整三个阶段。标准查询去掉阶段开头 5 秒，死亡阶段无样本的项保留为 `-`；完整窗口的残存样本另存于 `red-full.csv`。
+
+两种改法：按目标 20 请求/秒的实测峰值估计，limit 取 320 MiB。校准组 `runs/a3-size/red.csv` 第 2 阶段的 `report_inflight_max=17`，空载 RSS 为 8.48046875 MiB，计算时向上按 16 MiB 计：`(16 + 17×8×2)×1.1 = 316.8 MiB`，再向上取为 320 MiB。限制并发时 `-report-max=11`，因为 `16 + 11×8×2 = 192 MiB < 200 MiB`，12 个并发则为 208 MiB。测前参数记录见 `runs/a-preparation/a3-calibration.md`、`a3-fixes.md`。
+
+320 MiB 在目标 20 请求/秒时 396 个请求全部成功，30 请求/秒时再次 OOM。并发上限 11 的服务全程存活，20、30 请求/秒时分别成功 327/396、390/623，错误全部为主动 503（`runs/a3-cap11/steps.csv` 的 `codes`），错误率为 17.42%、37.40%。提高 limit 以更多内存承受负载；限制并发以拒绝超限请求保护进程。
+
+本轮内核 OOM 证据已取得。50 ms 的 cgroup 采样在基线中记录到 197.2578125 MiB 峰值，尚未采到 oom_kill 增长时 cgroup 已被销毁，因此以 systemd 和内核日志确认被杀。基线采样与计算见 `runs/a-preparation/summary.md`。实验结束后已停止并清理 `lab3-a`，记录见 `runs/a-preparation/cleanup.txt`。
 
 ## 3. 任务 B：伸缩控制环
 

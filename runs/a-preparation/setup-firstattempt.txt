@@ -1,0 +1,1 @@
+run.sh：从 /config 拿不到 enrolld 的进程号；enrolld 要和本脚本在同一台主机上

@@ -1,0 +1,4 @@
+Nov 17 19:05:06 ecs-249f systemd[1]: lab3-a.service: A process of this unit has been killed by the OOM killer.
+Nov 17 19:05:06 ecs-249f systemd[1]: lab3-a.service: Main process exited, code=killed, status=9/KILL
+Nov 17 19:05:06 ecs-249f systemd[1]: lab3-a.service: Failed with result 'oom-kill'.
+Nov 17 19:05:06 ecs-249f systemd[1]: lab3-a.service: Consumed 1.418s CPU time, 3.3M memory peak, 0B memory swap peak.

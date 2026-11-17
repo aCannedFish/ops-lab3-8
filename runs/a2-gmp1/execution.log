@@ -1,0 +1,20 @@
+警告：loadgen（GEN_CPUS=0）和 enrolld（0,1）共用了核 0，结果会互相干扰
+== loadgen（结果写进 runs/a2-gmp1/）
+loadgen：GET http://127.0.0.1:8081/api/courses/1，2 个阶段共 40s，到达过程 poisson，超时 2s，GOMAXPROCS=1
+阶段 1/2：目标 94 请求/秒，已发出 1934，已成功 1932，在途 2，压测机 CPU 2%
+阶段 2/2：目标 94 请求/秒，已发出 1823，已成功 1820，在途 3，压测机 CPU 2%
+等待在途的 3 个请求结束（最多 2s）…
+step  target_rps  sent    ok  error_rate  mean_ms  p50_ms  p99_ms  max_ms  slo_good  lag_p99_ms  gen_cpu_pct  
+   1          94  1934  1934      0.0000    10.43    8.35   52.40  104.59    0.9876        1.06            2  
+   2          94  1823  1823      0.0000    10.27    8.45   46.16   82.10    0.9918        1.06            2  
+ all              3757  3757      0.0000    10.35    8.39   51.40  104.59    0.9896        1.06            2  
+== 按阶段查询 Prometheus
+-- red.csv
+step  target_rps  server_rps  server_error_rate  server_p99_ms  server_mean_ms  inflight_avg  cpu_ms_per_req  sched_wait_p99_ms  gomaxprocs  cg_limit_cores  cg_cpu_cores  throttle_ratio  throttled_s_per_s  mem_limit_mb  mem_current_max_mb  rss_max_mb  heap_max_mb  report_inflight_max  gc_per_s
+1     94          99.3571     0                  39.6826        7.66543         0.6           4.10892         24.71              1           0.5             0.408236      0.242857        0.042528           256           6.57031             11.9609     3.29491      0                    0.142857
+2     94          89.7857     0                  23.9           7.37783         0.666667      4.15266         9.47308            1           0.5             0.372851      0.142857        0.0202004          256           6.55469             12.1133     3.35561      0                    0.142857
+-- use.csv
+step  target_rps  svc_cpu_busy  all_cpu_busy  cpu_steal  cpu_iowait  procs_running_avg  cpu_psi_some  mem_available_min_mb  swap_in_per_s  disk_w_per_s  disk_wkb_per_s  disk_w_await_ms  disk_f_per_s  disk_f_await_ms  disk_aqu_sz  disk_util
+1     94          0.223         0.223         0          0.0005      2.66667            0.055614      2266.37               0              20.9          109.6           0.803828         1.2           0.0833333        0.0168       0.0022
+2     94          0.2035        0.2035        0          0.0005      2                  0.0439592     2266.06               0              19.4          100.4           0.762887         0.4           0                0.0148       0.0026
+完成：runs/a2-gmp1

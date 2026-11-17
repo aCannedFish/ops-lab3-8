@@ -1,0 +1,95 @@
+Nov 17 19:05:06 ecs-249f kernel: enrolld invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
+Nov 17 19:05:06 ecs-249f kernel: CPU: 1 PID: 2400905 Comm: enrolld Kdump: loaded Not tainted 6.8.0-146-generic #146-Ubuntu
+Nov 17 19:05:06 ecs-249f kernel: Hardware name: OpenStack Foundation OpenStack Nova, BIOS rel-1.12.1-0-ga5cab58-20230305_150410-szxrtosci10000 04/01/2014
+Nov 17 19:05:06 ecs-249f kernel: Call Trace:
+Nov 17 19:05:06 ecs-249f kernel:  <TASK>
+Nov 17 19:05:06 ecs-249f kernel:  dump_stack_lvl+0x76/0xa0
+Nov 17 19:05:06 ecs-249f kernel:  dump_stack+0x10/0x20
+Nov 17 19:05:06 ecs-249f kernel:  dump_header+0x49/0x210
+Nov 17 19:05:06 ecs-249f kernel:  oom_kill_process+0x118/0x280
+Nov 17 19:05:06 ecs-249f kernel:  out_of_memory+0x103/0x350
+Nov 17 19:05:06 ecs-249f kernel:  mem_cgroup_out_of_memory+0x145/0x170
+Nov 17 19:05:06 ecs-249f kernel:  try_charge_memcg+0x6d6/0x7d0
+Nov 17 19:05:06 ecs-249f kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Nov 17 19:05:06 ecs-249f kernel:  ? vma_alloc_folio+0x7a/0xd0
+Nov 17 19:05:06 ecs-249f kernel:  __mem_cgroup_charge+0x45/0xc0
+Nov 17 19:05:06 ecs-249f kernel:  do_anonymous_page+0xb2/0x430
+Nov 17 19:05:06 ecs-249f kernel:  handle_pte_fault+0x1cb/0x1d0
+Nov 17 19:05:06 ecs-249f kernel:  __handle_mm_fault+0x654/0x790
+Nov 17 19:05:06 ecs-249f kernel:  handle_mm_fault+0x18a/0x380
+Nov 17 19:05:06 ecs-249f kernel:  do_user_addr_fault+0x169/0x670
+Nov 17 19:05:06 ecs-249f kernel:  exc_page_fault+0x83/0x1b0
+Nov 17 19:05:06 ecs-249f kernel:  asm_exc_page_fault+0x27/0x30
+Nov 17 19:05:06 ecs-249f kernel: RIP: 0033:0x6acea5
+Nov 17 19:05:06 ecs-249f kernel: Code: 00 00 00 48 8b 9c 24 e8 00 00 00 48 8d 0d 5f e8 10 00 bf 18 00 00 00 be f7 01 00 00 e8 a4 8c f8 ff 48 81 c4 c8 00 00 00 5d c3 <88> 1c 1a 48 81 c3 00 10 00 00 48 39 cb 7d 0c 72 ef e9 6f 01 00 00
+Nov 17 19:05:06 ecs-249f kernel: RSP: 002b:00003f77a5a838a0 EFLAGS: 00010287
+Nov 17 19:05:06 ecs-249f kernel: RAX: 00000000000001f4 RBX: 000000000023f000 RCX: 0000000000800000
+Nov 17 19:05:06 ecs-249f kernel: RDX: 00003f77b9300000 RSI: 0000000000800000 RDI: 0000000000000000
+Nov 17 19:05:06 ecs-249f kernel: RBP: 00003f77a5a83968 R08: 0000000000aaf0d0 R09: 0000000000000000
+Nov 17 19:05:06 ecs-249f kernel: R10: 0000000000aaf0c0 R11: 0000000000000000 R12: 00003f77a5a77ef0
+Nov 17 19:05:06 ecs-249f kernel: R13: 0000000000000000 R14: 00003f77a5a1c3c0 R15: 000000000000002a
+Nov 17 19:05:06 ecs-249f kernel:  </TASK>
+Nov 17 19:05:06 ecs-249f kernel: memory: usage 327680kB, limit 327680kB, failcnt 76
+Nov 17 19:05:06 ecs-249f kernel: swap: usage 0kB, limit 0kB, failcnt 0
+Nov 17 19:05:06 ecs-249f kernel: Memory cgroup stats for /system.slice/lab3-a.service:
+Nov 17 19:05:06 ecs-249f kernel: anon 334450688
+Nov 17 19:05:06 ecs-249f kernel: file 0
+Nov 17 19:05:06 ecs-249f kernel: kernel 1093632
+Nov 17 19:05:06 ecs-249f kernel: kernel_stack 114688
+Nov 17 19:05:06 ecs-249f kernel: pagetables 761856
+Nov 17 19:05:06 ecs-249f kernel: sec_pagetables 0
+Nov 17 19:05:06 ecs-249f kernel: percpu 64
+Nov 17 19:05:06 ecs-249f kernel: sock 0
+Nov 17 19:05:06 ecs-249f kernel: vmalloc 0
+Nov 17 19:05:06 ecs-249f kernel: shmem 0
+Nov 17 19:05:06 ecs-249f kernel: zswap 0
+Nov 17 19:05:06 ecs-249f kernel: zswapped 0
+Nov 17 19:05:06 ecs-249f kernel: file_mapped 0
+Nov 17 19:05:06 ecs-249f kernel: file_dirty 0
+Nov 17 19:05:06 ecs-249f kernel: file_writeback 0
+Nov 17 19:05:06 ecs-249f kernel: swapcached 0
+Nov 17 19:05:06 ecs-249f kernel: anon_thp 0
+Nov 17 19:05:06 ecs-249f kernel: file_thp 0
+Nov 17 19:05:06 ecs-249f kernel: shmem_thp 0
+Nov 17 19:05:06 ecs-249f kernel: inactive_anon 0
+Nov 17 19:05:06 ecs-249f kernel: active_anon 334422016
+Nov 17 19:05:06 ecs-249f kernel: inactive_file 0
+Nov 17 19:05:06 ecs-249f kernel: active_file 0
+Nov 17 19:05:06 ecs-249f kernel: unevictable 0
+Nov 17 19:05:06 ecs-249f kernel: slab_reclaimable 86096
+Nov 17 19:05:06 ecs-249f kernel: slab_unreclaimable 118496
+Nov 17 19:05:06 ecs-249f kernel: slab 204592
+Nov 17 19:05:06 ecs-249f kernel: workingset_refault_anon 0
+Nov 17 19:05:06 ecs-249f kernel: workingset_refault_file 0
+Nov 17 19:05:06 ecs-249f kernel: workingset_activate_anon 0
+Nov 17 19:05:06 ecs-249f kernel: workingset_activate_file 0
+Nov 17 19:05:06 ecs-249f kernel: workingset_restore_anon 0
+Nov 17 19:05:06 ecs-249f kernel: workingset_restore_file 0
+Nov 17 19:05:06 ecs-249f kernel: workingset_nodereclaim 0
+Nov 17 19:05:06 ecs-249f kernel: pgscan 0
+Nov 17 19:05:06 ecs-249f kernel: pgsteal 0
+Nov 17 19:05:06 ecs-249f kernel: pgscan_kswapd 0
+Nov 17 19:05:06 ecs-249f kernel: pgscan_direct 0
+Nov 17 19:05:06 ecs-249f kernel: pgscan_khugepaged 0
+Nov 17 19:05:06 ecs-249f kernel: pgsteal_kswapd 0
+Nov 17 19:05:06 ecs-249f kernel: pgsteal_direct 0
+Nov 17 19:05:06 ecs-249f kernel: pgsteal_khugepaged 0
+Nov 17 19:05:06 ecs-249f kernel: pgfault 293097
+Nov 17 19:05:06 ecs-249f kernel: pgmajfault 0
+Nov 17 19:05:06 ecs-249f kernel: pgrefill 0
+Nov 17 19:05:06 ecs-249f kernel: pgactivate 0
+Nov 17 19:05:06 ecs-249f kernel: pgdeactivate 0
+Nov 17 19:05:06 ecs-249f kernel: pglazyfree 0
+Nov 17 19:05:06 ecs-249f kernel: pglazyfreed 0
+Nov 17 19:05:06 ecs-249f kernel: zswpin 0
+Nov 17 19:05:06 ecs-249f kernel: zswpout 0
+Nov 17 19:05:06 ecs-249f kernel: zswpwb 0
+Nov 17 19:05:06 ecs-249f kernel: thp_fault_alloc 0
+Nov 17 19:05:06 ecs-249f kernel: thp_collapse_alloc 0
+Nov 17 19:05:06 ecs-249f kernel: thp_swpout 0
+Nov 17 19:05:06 ecs-249f kernel: thp_swpout_fallback 0
+Nov 17 19:05:06 ecs-249f kernel: Tasks state (memory values in pages):
+Nov 17 19:05:06 ecs-249f kernel: [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
+Nov 17 19:05:06 ecs-249f kernel: [2400899]  1000 2400899   398527    83087    81615     1472         0   761856        0             0 enrolld
+Nov 17 19:05:06 ecs-249f kernel: oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=lab3-a.service,mems_allowed=0,oom_memcg=/system.slice/lab3-a.service,task_memcg=/system.slice/lab3-a.service,task=enrolld,pid=2400899,uid=1000
+Nov 17 19:05:06 ecs-249f kernel: Memory cgroup out of memory: Killed process 2400899 (enrolld) total-vm:1594108kB, anon-rss:326460kB, file-rss:5888kB, shmem-rss:0kB, UID:1000 pgtables:744kB oom_score_adj:0

@@ -1,0 +1,3 @@
+cpu.max: max 100000
+memory.max: 335544320
+memory.swap.max: 0

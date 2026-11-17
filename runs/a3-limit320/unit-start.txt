@@ -1,0 +1,8 @@
+ExecStart={ path=/home/ubuntu/lab3/bin/enrolld ; argv[]=/home/ubuntu/lab3/bin/enrolld -addr 127.0.0.1:8081 -data /home/ubuntu/lab3/data/a-task ; ignore_errors=no ; start_time=[Tue 2026-11-17 19:04:20 CST] ; stop_time=[n/a] ; pid=2400899 ; code=(null) ; status=0/0 }
+ControlGroup=/system.slice/lab3-a.service
+CPUQuotaPerSecUSec=infinity
+CPUQuotaPeriodUSec=infinity
+MemoryMax=335544320
+MemorySwapMax=0
+Environment=
+User=ubuntu

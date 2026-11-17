@@ -1,0 +1,5 @@
+2026-11-17T19:07:37+08:00
+LoadState=not-found
+ActiveState=inactive
+LISTEN 0      4096       127.0.0.1:9100       0.0.0.0:*    users:(("node_exporter",pid=3423647,fd=4))             
+LISTEN 0      4096       127.0.0.1:9090       0.0.0.0:*    users:(("prometheus",pid=3424502,fd=7))                
