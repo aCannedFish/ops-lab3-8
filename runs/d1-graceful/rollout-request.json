@@ -1,0 +1,6 @@
+{
+  "url": "http://127.0.0.1:8091/rollout?version=v3&mode=graceful",
+  "unix": 1795594916.9570198,
+  "status": 202,
+  "body": "\u5f00\u59cb\u6eda\u52a8\u53d1\u5e03\n"
+}
