@@ -29,7 +29,7 @@ case $action in
   kill)
     u=$(unit "${2:-}")
     mark kill "127.0.0.1:$2"
-    systemctl kill --signal=SIGKILL "$u"
+    systemctl kill --kill-whom=main --signal=SIGKILL "$u"
     ;;
   pause)
     secs=${3:-}

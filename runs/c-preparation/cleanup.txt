@@ -1,0 +1,15 @@
+2026-11-25T09:13:36+08:00
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.
+To show all installed unit files use 'systemctl list-unit-files'.
+-rw-r--r-- 1 root root 74 Nov 25 00:45 /home/ubuntu/lab3/data/targets.json
+[
+  {
+    "labels": {
+      "group": "lab3"
+    },
+    "targets": []
+  }
+]Prometheus Server is Ready.
+bash syntax: OK

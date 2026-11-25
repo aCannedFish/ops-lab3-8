@@ -1,0 +1,47 @@
+{
+  "params": {
+    "query": "rate(cgroup_cpu_usage_seconds_total{job=\"instances\"}[30s])",
+    "time": 1795568255
+  },
+  "response": {
+    "status": "success",
+    "data": {
+      "resultType": "vector",
+      "result": [
+        {
+          "metric": {
+            "group": "lab3",
+            "instance": "127.0.0.1:8102",
+            "job": "instances"
+          },
+          "value": [
+            1795568255,
+            "0.11415547999999998"
+          ]
+        },
+        {
+          "metric": {
+            "group": "lab3",
+            "instance": "127.0.0.1:8101",
+            "job": "instances"
+          },
+          "value": [
+            1795568255,
+            "0.11384431999999998"
+          ]
+        },
+        {
+          "metric": {
+            "group": "lab3",
+            "instance": "127.0.0.1:8103",
+            "job": "instances"
+          },
+          "value": [
+            1795568255,
+            "0.11421255999999998"
+          ]
+        }
+      ]
+    }
+  }
+}
